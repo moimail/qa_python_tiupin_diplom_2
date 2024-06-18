@@ -1,23 +1,16 @@
 import pytest
 import allure
 
+import conftest
 from data import StatusCodes as CODE
 from data import ResponseKeys as KEYS
 from data import ResponseMessages as message
 
 from helpers.helpers_on_check_response import HelpersOnCheck as c
 from helpers.helpers_on_create_user import HelpersOnCreateUser as u
-from helpers.helpers_on_get_ingredients import HelpersOnGetIngredients as g
 
 
-@pytest.fixture(scope='class')
-@allure.title('Инициализируем списки ингредиентов')
-def setup_ingredients():
-    ingredients = g.get_ingredients()
-    TestCreateOrder.buns_list = g.get_buns_list(ingredients)
-    TestCreateOrder.fillings_list = g.get_fillings_list(ingredients)
-    TestCreateOrder.sauces_list = g.get_sauces_list(ingredients)
-    c.check_ingredients(TestCreateOrder.buns_list, TestCreateOrder.fillings_list, TestCreateOrder.sauces_list)
+
 
 
 @pytest.mark.usefixtures('setup_ingredients', scope='class')
@@ -30,6 +23,7 @@ class TestCreateOrder:
 
     @allure.step('Собираем бургер для заказа')
     def __create_burger(self):
+
         ingredients_list = [
             (self.buns_list[0])[KEYS.ID_KEY],
             (self.fillings_list[0])[KEYS.ID_KEY],
@@ -40,6 +34,8 @@ class TestCreateOrder:
 
     @allure.title('Проверка создания заказа для авторизованного пользователя')
     def test_create_order_authorized_user(self, setup_user):
+
+
         # сохраняем авторизационный токен пользователя, полученный при регистрации
         user_data, auth_token = setup_user
         # составляем список ингредиентов для бургера
